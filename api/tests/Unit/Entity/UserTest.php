@@ -21,5 +21,24 @@ class UserTest extends TestCase
     {
         $user = new User();
         self::assertSame(['ROLE_USER'], $user->getRoles());
+        self::assertNotNull($user->getUserIdentifier());
+        self::assertEmpty($user->getUserIdentifier());
+        self::assertNull($user->getUsername());
+        self::assertNull($user->getEmail());
+        self::assertNull($user->getId());
+    }
+
+    public function testUserIdentifier(): void
+    {
+        $user = new User();
+        self::assertNotNull($user->getUserIdentifier());
+        self::assertEmpty($user->getUserIdentifier());
+
+        $actual = $expected = 'foo';
+        $user->setEmail($actual);
+        self::assertSame($expected, $user->getEmail());
+        self::assertNotNull($user->getUserIdentifier());
+        self::assertNotEmpty($user->getUserIdentifier());
+        self::assertSame($expected, $user->getUserIdentifier());
     }
 }
