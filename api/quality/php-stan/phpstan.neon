@@ -1,0 +1,32 @@
+includes:
+	- phpstan-baseline.neon
+#	- vendor/phpstan/phpstan-doctrine/extension.neon
+#	- vendor/phpstan/phpstan-phpunit/extension.neon
+#	- vendor/phpstan/phpstan-symfony/extension.neon
+#
+#parameters:
+#	reportUnmatchedIgnoredErrors: false
+#	symfony:
+#		# with Symfony 5+
+#		containerXmlPath: ../../var/cache/dev/App_KernelDevDebugContainer.xml
+#
+#	# If you're using PHP config files for Symfony 5.3+, you also need this for auto-loading of `Symfony\Config`:
+#	scanDirectories:
+#		- ../../var/cache/dev/Symfony/Config
+#	tmpDir: cache
+
+#includes:
+#    - ../../vendor/phpstan/phpstan-doctrine/extension.neon
+#    - ../../vendor/phpstan/phpstan-doctrine/rules.neon
+
+parameters:
+	level: 9
+	paths:
+		- ../../bin
+		- ../../migrations
+		- ../../public
+		- ../../src
+		- ../../templates
+		- ../../tests
+
+	ignoreErrors:
