@@ -1,5 +1,15 @@
 <?php
 
+/**
+ * This file is part of the RPG-One Project
+ *
+ * PHP 8.2 | Symfony 6.2+
+ *
+ * Copyright LongitudeOne - Alexandre Tranchant
+ * Copyright 2023 - 2023
+ *
+ */
+
 return [
     Symfony\Bundle\FrameworkBundle\FrameworkBundle::class => ['all' => true],
     Symfony\Bundle\SecurityBundle\SecurityBundle::class => ['all' => true],

@@ -1,5 +1,15 @@
 <?php
 
+/**
+ * This file is part of the RPG-One Project
+ *
+ * PHP 8.2 | Symfony 6.2+
+ *
+ * Copyright LongitudeOne - Alexandre Tranchant
+ * Copyright 2023 - 2023
+ *
+ */
+
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
@@ -14,19 +24,18 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Greeting
 {
     /**
-     * The entity ID
+     * A nice person.
+     */
+    #[ORM\Column]
+    #[Assert\NotBlank]
+    public string $name = '';
+    /**
+     * The entity ID.
      */
     #[ORM\Id]
     #[ORM\Column(type: 'integer')]
     #[ORM\GeneratedValue]
     private ?int $id = null;
-
-    /**
-     * A nice person
-     */
-    #[ORM\Column]
-    #[Assert\NotBlank]
-    public string $name = '';
 
     public function getId(): ?int
     {
