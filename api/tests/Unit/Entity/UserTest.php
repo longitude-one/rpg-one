@@ -31,13 +31,11 @@ class UserTest extends TestCase
     public function testUserIdentifier(): void
     {
         $user = new User();
-        self::assertNotNull($user->getUserIdentifier());
         self::assertEmpty($user->getUserIdentifier());
 
         $actual = $expected = 'foo';
         $user->setEmail($actual);
         self::assertSame($expected, $user->getEmail());
-        self::assertNotNull($user->getUserIdentifier());
         self::assertNotEmpty($user->getUserIdentifier());
         self::assertSame($expected, $user->getUserIdentifier());
     }

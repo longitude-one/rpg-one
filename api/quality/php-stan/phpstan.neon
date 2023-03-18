@@ -28,5 +28,6 @@ parameters:
 		- ../../src
 		- ../../templates
 		- ../../tests
-
+	scanFiles:
+	    - ../../vendor/bin/.phpunit/phpunit-9.5-0/vendor/autoload.php
 	ignoreErrors:

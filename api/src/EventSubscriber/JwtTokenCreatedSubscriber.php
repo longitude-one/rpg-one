@@ -12,6 +12,7 @@
 
 namespace App\EventSubscriber;
 
+use App\Entity\User;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\JWTCreatedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -27,11 +28,14 @@ class JwtTokenCreatedSubscriber implements EventSubscriberInterface
     public function onLexikJwtAuthenticationOnJwtCreated(JWTCreatedEvent $event): void
     {
         $user = $event->getUser();
-        $payload = $event->getData();
-        $payload['id'] = $user->getId();
-        $payload['pseudonym'] = $user->getPseudonym();
-        $payload['email'] = $user->getEmail();
-        $payload['password'] = $user->getPassword();
-        $event->setData($payload);
+
+        if ($user instanceof User) {
+            $payload = $event->getData();
+            $payload['id'] = $user->getId();
+            $payload['pseudonym'] = $user->getPseudonym();
+            $payload['email'] = $user->getEmail();
+            $payload['password'] = $user->getPassword();
+            $event->setData($payload);
+        }
     }
 }
