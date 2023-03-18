@@ -40,16 +40,16 @@ class UserRepositoryTest extends KernelTestCase
         self::assertSame($expected, $user->getEmail());
     }
 
-    public function testFindOneByUsername()
+    public function testFindOneByPseudonym()
     {
-        $user = $this->userRepository->findOneByUsername('Non-Existent-User-Foo-Bar');
+        $user = $this->userRepository->findOneByPseudonym('Non-Existent-User-Foo-Bar');
         self::assertNull($user);
 
         $actual = $expected = 'DefaultAdmin';
-        $user = $this->userRepository->findOneByUsername($actual);
+        $user = $this->userRepository->findOneByPseudonym($actual);
 
         self::assertNotNull($user);
         self::assertInstanceOf(User::class, $user);
-        self::assertSame($expected, $user->getUsername());
+        self::assertSame($expected, $user->getPseudonym());
     }
 }

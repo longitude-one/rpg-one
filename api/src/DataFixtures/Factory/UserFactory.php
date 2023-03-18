@@ -41,7 +41,7 @@ use Zenstruck\Foundry\RepositoryProxy;
  */
 final class UserFactory extends ModelFactory
 {
-    public const USERNAMES = [
+    public const PSEUDONYMS = [
         'FlamingInferno',
         'ScaleSorcerer',
         'TheDragonWithBadBreath',
@@ -68,14 +68,14 @@ final class UserFactory extends ModelFactory
         $users[] = self::createOne([
             'email' => 'user@example.org',
             'password' => 'password',
-            'username' => 'DefaultUser',
+            'pseudonym' => 'DefaultUser',
         ]);
 
         // Admin user
         $users[] = self::createOne([
             'email' => 'admin@example.org',
             'password' => 'password',
-            'username' => 'DefaultAdmin',
+            'pseudonym' => 'DefaultAdmin',
             'roles' => ['ROLE_ADMIN'],
         ]);
 
@@ -90,13 +90,13 @@ final class UserFactory extends ModelFactory
     /**
      * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#model-factories
      */
-    #[ArrayShape(['email' => 'string', 'password' => 'string', 'username' => 'string'])]
+    #[ArrayShape(['email' => 'string', 'password' => 'string', 'pseudonym' => 'string'])]
     protected function getDefaults(): array
     {
         return [
             'email' => self::faker()->email(),
             'password' => 'password',
-            'username' => self::faker()->randomElement(self::USERNAMES).self::faker()->randomNumber(3),
+            'pseudonym' => self::faker()->randomElement(self::PSEUDONYMS).self::faker()->randomNumber(3),
         ];
     }
 

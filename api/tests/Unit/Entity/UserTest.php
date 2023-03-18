@@ -23,7 +23,7 @@ class UserTest extends TestCase
         self::assertSame(['ROLE_USER'], $user->getRoles());
         self::assertNotNull($user->getUserIdentifier());
         self::assertEmpty($user->getUserIdentifier());
-        self::assertNull($user->getUsername());
+        self::assertNull($user->getPseudonym());
         self::assertNull($user->getEmail());
         self::assertNull($user->getId());
     }

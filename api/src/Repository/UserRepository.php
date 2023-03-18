@@ -34,22 +34,22 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         parent::__construct($registry, User::class);
     }
 
-    /**
-     * @return User[] Returns an array of User objects
-     */
-    public function findByEmail($value): array
-    {
-        return $this->createQueryBuilder('u')
-            ->andWhere('u.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('u.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
+//    /**
+//     * @return User[] Returns an array of User objects
+//     */
+//    public function findByEmail(string $email): array
+//    {
+//        return $this->createQueryBuilder('u')
+//            ->andWhere('u.email = :email')
+//            ->setParameter('email', $email)
+//            ->orderBy('u.id', 'ASC')
+//            ->setMaxResults(10)
+//            ->getQuery()
+//            ->getResult()
+//        ;
+//    }
 
-    public function findOneByEmail($email): ?User
+    public function findOneByEmail(string $email): ?User
     {
         return $this->createQueryBuilder('u')
             ->andWhere('u.email = :email')
@@ -59,11 +59,11 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         ;
     }
 
-    public function findOneByUsername($username): ?User
+    public function findOneByPseudonym(string $pseudonym): ?User
     {
         return $this->createQueryBuilder('u')
-            ->andWhere('u.username = :username')
-            ->setParameter('username', $username)
+            ->andWhere('u.pseudonym = :pseudonym')
+            ->setParameter('pseudonym', $pseudonym)
             ->getQuery()
             ->getOneOrNullResult()
         ;
