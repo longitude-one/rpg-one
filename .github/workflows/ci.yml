@@ -43,10 +43,7 @@ jobs:
           docker compose exec -T php bin/console -e test doctrine:database:create
           docker compose exec -T php bin/console -e test doctrine:migrations:migrate --no-interaction
       - name: Create JWT Keypair
-        run: |
-          docker compose exec -T php bin/console lexik:jwt:generate-keypair --skip-if-exists --no-interaction
-          docker compose exec -T php setfacl -R -m u:www-data:rX -m u:"$(whoami)":rwX config/jwt
-          docker compose exec -T php setfacl -dR -m u:www-data:rX -m u:"$(whoami)":rwX config/jwt
+        run: docker compose exec -T php bin/console lexik:jwt:generate-keypair --skip-if-exists --no-interaction
       - name: PHPUnit
         run: docker compose exec -T php bin/phpunit
       - name: Doctrine Schema Validator
