@@ -45,8 +45,8 @@ jobs:
       - name: Create JWT Keypair
         run: |
           docker compose exec -T php bin/console lexik:jwt:generate-keypair --skip-if-exists --no-interaction
-          docker compose exec -T setfacl -R -m u:www-data:rX -m u:"$(whoami)":rwX config/jwt
-          docker compose exec -T setfacl -dR -m u:www-data:rX -m u:"$(whoami)":rwX config/jwt
+          docker compose exec -T php setfacl -R -m u:www-data:rX -m u:"$(whoami)":rwX config/jwt
+          docker compose exec -T php setfacl -dR -m u:www-data:rX -m u:"$(whoami)":rwX config/jwt
       - name: PHPUnit
         run: docker compose exec -T php bin/phpunit
       - name: Doctrine Schema Validator
