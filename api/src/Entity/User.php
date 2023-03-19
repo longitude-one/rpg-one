@@ -14,6 +14,7 @@ namespace App\Entity;
 
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Lexik\Bundle\JWTAuthenticationBundle\Security\User\JWTUserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -22,10 +23,11 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[ORM\Table(name: '`user`')]
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
 #[UniqueEntity(fields: ['username'], message: 'There is already an account with this username')]
-class User implements UserInterface, PasswordAuthenticatedUserInterface
+class User implements UserInterface, PasswordAuthenticatedUserInterface // , JwtUserInterface
 {
     #[ORM\Column(length: 180, unique: true)]
     private ?string $email = null;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -37,11 +39,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
+    #[ORM\Column(length: 255, unique: true)]
+    private ?string $pseudonym = null;
+
     #[ORM\Column]
     private array $roles = [];
-
-    #[ORM\Column(length: 255, unique: true)]
-    private ?string $username = null;
 
     /**
      * @see UserInterface
@@ -70,6 +72,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->password;
     }
 
+    public function getPseudonym(): ?string
+    {
+        return $this->pseudonym;
+    }
+
     /**
      * @see UserInterface
      */
@@ -92,11 +99,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return (string) $this->email;
     }
 
-    public function getUsername(): ?string
-    {
-        return $this->username;
-    }
-
     public function setEmail(string $email): self
     {
         $this->email = $email;
@@ -111,17 +113,37 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    public function setPseudonym(string $pseudonym): self
+    {
+        $this->pseudonym = $pseudonym;
+
+        return $this;
+    }
+
     public function setRoles(array $roles): self
     {
         $this->roles = $roles;
 
         return $this;
     }
-
-    public function setUsername(string $username): self
-    {
-        $this->username = $username;
-
-        return $this;
-    }
+//
+//    public static function createFromPayload($username, array $payload): self
+//    {
+//        $user = new User();
+//        $user
+//            ->setId($payload['id']??0)
+//            ->setEmail($payload['username']??'')
+//            ->setUsername($payload['username']??'')
+//            ->setRoles($payload['roles']??[])
+//            ->setPassword($payload['password']??'');
+//
+//        return $user;
+//    }
+//
+//    private function setId(int $id): self
+//    {
+//        $this->id = $id;
+//
+//        return $this;
+//    }
 }
