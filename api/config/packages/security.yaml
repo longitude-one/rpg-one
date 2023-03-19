@@ -16,9 +16,14 @@ security:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
-        main:
-            lazy: true
+        api:
+            pattern: ^/api/
+            stateless: true
             provider: app_user_provider
+            jwt: ~
+        main:
+            provider: app_user_provider
+            stateless: true
             json_login:
                 check_path: /auth # The name in routes.yaml is enough for mapping
                 username_path: email
@@ -36,10 +41,10 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        - { path: ^/$, roles: PUBLIC_ACCESS } # Allows accessing the Swagger UI
-        - { path: ^/docs, roles: PUBLIC_ACCESS } # Allows accessing the Swagger UI docs
-        - { path: ^/auth, roles: PUBLIC_ACCESS }
-        - { path: ^/, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/api$, roles: PUBLIC_ACCESS } # Allows accessing the Swagger UI
+        - { path: ^/api/docs, roles: PUBLIC_ACCESS } # Allows accessing the Swagger UI docs
+        - { path: ^/api/auth, roles: PUBLIC_ACCESS } # Allows accessing the login route
+        - { path: ^/api, roles: PUBLIC_ACCESS } # Allows accessing the api routes
 
 when@test:
     security:
