@@ -12,20 +12,45 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiProperty;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Lexik\Bundle\JWTAuthenticationBundle\Security\User\JWTUserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
 #[UniqueEntity(fields: ['username'], message: 'There is already an account with this username')]
+
+#[ApiResource(
+    shortName: 'User',
+    description: 'User entity',
+    types: 'https://schema.org/Person',
+    mercure: true,
+    normalizationContext: ['groups' => []],
+    denormalizationContext: ['groups' => []],
+)]
+#[Get]
+#[GetCollection]
+#[Post]
+#[Put]
+#[Patch]
+#[Delete]
 class User implements UserInterface, PasswordAuthenticatedUserInterface // , JwtUserInterface
 {
     #[ORM\Column(length: 180, unique: true)]
+    #[ApiProperty(types: ["https://schema.org/email"])]
+    #[Groups(['admin:read', 'owner:read', 'owner:write'])]
     private ?string $email = null;
 
     #[ORM\Id]
@@ -37,12 +62,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface // , Jwt
      * @var ?string The hashed password
      */
     #[ORM\Column]
+    #[ApiProperty(types: ["https://schema.org/accessCode"])]
     private ?string $password = null;
 
     #[ORM\Column(length: 255, unique: true)]
+    #[ApiProperty(types: ["https://schema.org/name"])]
+    #[Groups(['user:read', 'owner:read', 'owner:write', 'admin:read', 'admin:write'])]
     private ?string $pseudonym = null;
 
     #[ORM\Column]
+    #[ApiProperty(jsonSchemaContext: [
+        'type' => 'array',
+        'items' => ['type' => 'string'],
+    ])]
     private array $roles = [];
 
     /**
