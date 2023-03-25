@@ -32,7 +32,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Table(name: '`user`')]
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
 #[UniqueEntity(fields: ['pseudonym'], message: 'There is already an account with this username')]
-
 #[ApiResource(
     shortName: 'User',
     description: 'User entity',
@@ -50,7 +49,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class User implements UserInterface, PasswordAuthenticatedUserInterface // , JwtUserInterface
 {
     #[ORM\Column(length: 180, unique: true)]
-    #[ApiProperty(types: ["https://schema.org/email"])]
+    #[ApiProperty(types: ['https://schema.org/email'])]
     #[Groups(['anonymous:write', 'admin:read', 'owner:read', 'owner:write'])]
     #[Assert\NotBlank]
     #[Assert\Email]
@@ -65,11 +64,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface // , Jwt
      * @var ?string The hashed password
      */
     #[ORM\Column]
-    #[ApiProperty(types: ["https://schema.org/accessCode"])]
+    #[ApiProperty(types: ['https://schema.org/accessCode'])]
     private ?string $password = null;
 
     #[ORM\Column(length: 255, unique: true)]
-    #[ApiProperty(types: ["https://schema.org/name"])]
+    #[ApiProperty(types: ['https://schema.org/name'])]
     #[Groups(['read', 'owner:read', 'owner:write', 'admin:read', 'admin:write'])]
     #[Assert\NotBlank]
     private ?string $pseudonym = null;

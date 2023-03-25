@@ -10,12 +10,18 @@
  *
  */
 
-namespace App\Tests\Api;
+namespace App\Tests\Api\Admin;
 
-use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
+use App\Tests\Api\AuthenticationTest;
 
-class UserTest extends ApiTestCase
+class UserTest extends AuthenticationTest
 {
+    public function setUp(): void
+    {
+        self::setToken('admin');
+        parent::setUp();
+    }
+
     public function testCreateUser(): void
     {
         static::createClient()->request('POST', '/api/users', ['json' => [
@@ -32,7 +38,7 @@ class UserTest extends ApiTestCase
         ]);
     }
 
-    public function testGetCollectionWithAnonymous(): void
+    public function testGetCollection(): void
     {
         static::createClient()->request('GET', '/api/users');
         $this->assertResponseIsSuccessful();
