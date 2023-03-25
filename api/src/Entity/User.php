@@ -26,31 +26,34 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
-#[UniqueEntity(fields: ['username'], message: 'There is already an account with this username')]
+#[UniqueEntity(fields: ['pseudonym'], message: 'There is already an account with this username')]
 
 #[ApiResource(
     shortName: 'User',
     description: 'User entity',
     types: 'https://schema.org/Person',
-    mercure: true,
-    normalizationContext: ['groups' => []],
-    denormalizationContext: ['groups' => []],
+    normalizationContext: ['groups' => ['anonymous:read']],
+    denormalizationContext: ['groups' => ['anonymous:write']],
+    mercure: true
 )]
 #[Get]
 #[GetCollection]
 #[Post]
 #[Put]
 #[Patch]
-#[Delete]
+#[Delete(security: 'is_granted("ROLE_ADMIN")')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface // , JwtUserInterface
 {
     #[ORM\Column(length: 180, unique: true)]
     #[ApiProperty(types: ["https://schema.org/email"])]
-    #[Groups(['admin:read', 'owner:read', 'owner:write'])]
+    #[Groups(['anonymous:write', 'admin:read', 'owner:read', 'owner:write'])]
+    #[Assert\NotBlank]
+    #[Assert\Email]
     private ?string $email = null;
 
     #[ORM\Id]
@@ -67,7 +70,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface // , Jwt
 
     #[ORM\Column(length: 255, unique: true)]
     #[ApiProperty(types: ["https://schema.org/name"])]
-    #[Groups(['user:read', 'owner:read', 'owner:write', 'admin:read', 'admin:write'])]
+    #[Groups(['read', 'owner:read', 'owner:write', 'admin:read', 'admin:write'])]
+    #[Assert\NotBlank]
     private ?string $pseudonym = null;
 
     #[ORM\Column]

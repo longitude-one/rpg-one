@@ -17,15 +17,15 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         api:
-            pattern: ^/api/
+            pattern: ^/api/(users|greetings)
             stateless: true
-            provider: app_user_provider
-            jwt: ~
+            jwt: 
+                provider: app_user_provider
         main:
             provider: app_user_provider
             stateless: true
             json_login:
-                check_path: /auth # The name in routes.yaml is enough for mapping
+                check_path: /api/auth # The name in routes.yaml is enough for mapping
                 username_path: email
                 password_path: password
                 success_handler: lexik_jwt_authentication.handler.authentication_success
@@ -44,6 +44,7 @@ security:
         - { path: ^/api$, roles: PUBLIC_ACCESS } # Allows accessing the Swagger UI
         - { path: ^/api/docs, roles: PUBLIC_ACCESS } # Allows accessing the Swagger UI docs
         - { path: ^/api/auth, roles: PUBLIC_ACCESS } # Allows accessing the login route
+        - { path: ^/api/register, roles: PUBLIC_ACCESS } # Allows accessing the login route
         - { path: ^/api, roles: PUBLIC_ACCESS } # Allows accessing the api routes
 
 when@test:
