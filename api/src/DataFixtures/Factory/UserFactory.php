@@ -71,6 +71,13 @@ final class UserFactory extends ModelFactory
             'pseudonym' => 'DefaultUser',
         ]);
 
+        // Owner : This user is used to test the owner feature
+        $users[] = self::createOne([
+            'email' => 'owner@example.org',
+            'password' => 'password',
+            'pseudonym' => 'The Owner',
+        ]);
+
         // Admin user
         $users[] = self::createOne([
             'email' => 'admin@example.org',
@@ -109,7 +116,7 @@ final class UserFactory extends ModelFactory
             ->afterInstantiate(function (User $user): void {
                 $user->setPassword($this->passwordHasher->hashPassword(
                     $user,
-                    $user->getPassword())
+                    $user->getPassword() ?? 'password')
                 );
             })
         ;

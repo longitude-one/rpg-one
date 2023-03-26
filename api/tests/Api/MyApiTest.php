@@ -18,15 +18,39 @@ use Symfony\Contracts\HttpClient\ResponseInterface;
 abstract class MyApiTest extends ApiTestCase
 {
     /**
-     * @throws \Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface
-     * @throws \Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface
-     * @throws \Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface
-     * @throws \Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface
-     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
+     * @param string[] $keys
      */
-    protected static function assertHydraCollectionContainsKeysInMember(array $keys, ResponseInterface $response): void
+    protected static function assertContainsKeys(array $keys, ResponseInterface $response, bool $strict = false): void
+    {
+        self::assertJson($response->getContent());
+        $content = $response->toArray();
+        self::assertIsArray($content);
+
+        foreach ($keys as $key) {
+            self::assertArrayHasKey($key, $content, 'The key '.$key.' is missing in the response. It only contains '.implode(', ', array_keys($content)));
+        }
+
+        if ($strict) {
+            self::assertCount(
+                count($keys),
+                $content,
+                'The response contains more keys than expected. It contains '.implode(', ', array_keys($content))
+            );
+        }
+    }
+
+    protected static function assertHydraCollection(): void
     {
         self::assertJsonContains(['@type' => 'hydra:Collection']);
+    }
+
+    /**
+     * @param string[] $keys
+     */
+    protected static function assertHydraCollectionContainsKeysInMember(array $keys, ResponseInterface $response, bool $strict = false): void
+    {
+        self::assertJson($response->getContent());
+        self::assertHydraCollection();
 
         $hydraMembers = $response->toArray()['hydra:member'];
         $firstMember = array_shift($hydraMembers);
@@ -35,26 +59,46 @@ abstract class MyApiTest extends ApiTestCase
         }
 
         foreach ($keys as $key) {
-            self::assertArrayHasKey($key, $firstMember);
+            self::assertArrayHasKey($key, $firstMember, 'The key '.$key.' is missing in the collection. It only contains '.implode(', ', array_keys($firstMember)));
+        }
+
+        self::assertCount(
+            count($keys),
+            $firstMember,
+            'The collection contains more keys than expected. It contains '.implode(', ', array_keys($firstMember))
+        );
+    }
+
+    /**
+     * @param string[] $keys
+     */
+    protected static function assertHydraCollectionNotContainsKeysInMember(array $keys, ResponseInterface $response): void
+    {
+        self::assertJson($response->getContent());
+        self::assertHydraCollection();
+
+        $hydraMembers = $response->toArray()['hydra:member'];
+        self::assertNotEmpty($hydraMembers, 'The collection is empty! I cannot check if it contains keys');
+
+        $firstMember = array_shift($hydraMembers);
+        foreach ($keys as $key) {
+            self::assertArrayNotHasKey($key, $firstMember);
         }
     }
 
     /**
-     * @throws \Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface
-     * @throws \Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface
-     * @throws \Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface
-     * @throws \Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface
-     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
+     * @param string[] $keys
      */
-    protected static function assertHydraCollectionNotContainsKeysInMember(array $keys, ResponseInterface $response): void
+    protected static function assertHydraCollectionOnlyContainsKeysInMember(array $keys, ResponseInterface $response): void
     {
-        self::assertJsonContains(['@type' => 'hydra:Collection']);
+        self::assertHydraCollectionContainsKeysInMember($keys, $response, true);
+    }
 
-        $hydraMembers = $response->toArray()['hydra:member'];
-        $firstMember = array_shift($hydraMembers);
-
-        foreach ($keys as $key) {
-            self::assertArrayNotHasKey($key, $firstMember);
-        }
+    /**
+     * @param string[] $keys
+     */
+    protected static function assertOnlyContainsKeys(array $keys, ResponseInterface $response): void
+    {
+        self::assertContainsKeys($keys, $response, true);
     }
 }

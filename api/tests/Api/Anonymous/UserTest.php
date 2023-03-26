@@ -32,15 +32,33 @@ class UserTest extends MyApiTest
         ]);
     }
 
+    public function testGet(): void
+    {
+        $response = static::createClient()->request('GET', '/api/users');
+        $url = $response->toArray()['hydra:member'][0]['@id'];
+
+        $response = static::createClient()->request('GET', $url);
+        self::assertResponseIsSuccessful();
+        self::assertJsonContains([
+            '@context' => '/api/contexts/User',
+            '@id' => $url,
+            '@type' => 'https://schema.org/Person',
+        ]);
+
+        self::assertOnlyContainsKeys(['@context', '@id', '@type', 'pseudonym', 'admin'], $response);
+    }
+
     public function testGetCollection(): void
     {
-        static::createClient()->request('GET', '/api/users');
-        $this->assertResponseIsSuccessful();
-        $this->assertJsonContains([
+        $response = static::createClient()->request('GET', '/api/users');
+        self::assertResponseIsSuccessful();
+        self::assertJsonContains([
             '@context' => '/api/contexts/User',
             '@id' => '/api/users',
             '@type' => 'hydra:Collection',
-            'hydra:totalItems' => 12,
+            'hydra:totalItems' => 13,
         ]);
+
+        self::assertHydraCollectionOnlyContainsKeysInMember(['@id', '@type', 'pseudonym', 'admin'], $response);
     }
 }

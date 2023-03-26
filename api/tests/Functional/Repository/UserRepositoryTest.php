@@ -14,6 +14,7 @@ namespace App\Tests\Functional\Repository;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
+use Doctrine\Bundle\DoctrineBundle\Registry;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class UserRepositoryTest extends KernelTestCase
@@ -23,11 +24,15 @@ class UserRepositoryTest extends KernelTestCase
     public function setUp(): void
     {
         $kernel = self::bootKernel();
-        $entityManager = $kernel->getContainer()->get('doctrine')->getManager();
+        $registry = $kernel->getContainer()->get('doctrine');
+        if (!$registry instanceof Registry) {
+            self::fail('Doctrine registry not loaded');
+        }
+        $entityManager = $registry->getManager();
         $this->userRepository = $entityManager->getRepository(User::class);
     }
 
-    public function testFindOneByEmail()
+    public function testFindOneByEmail(): void
     {
         $user = $this->userRepository->findOneByEmail('Non-Existent-Email@foo.example.org');
         self::assertNull($user);
@@ -40,7 +45,7 @@ class UserRepositoryTest extends KernelTestCase
         self::assertSame($expected, $user->getEmail());
     }
 
-    public function testFindOneByPseudonym()
+    public function testFindOneByPseudonym(): void
     {
         $user = $this->userRepository->findOneByPseudonym('Non-Existent-User-Foo-Bar');
         self::assertNull($user);
