@@ -14,8 +14,6 @@ namespace App\Tests\Api\Owner;
 
 use App\Entity\User;
 use App\Tests\Api\AuthenticationTest;
-use Doctrine\Bundle\DoctrineBundle\Registry;
-use Doctrine\ORM\EntityManagerInterface;
 
 class UserTest extends AuthenticationTest
 {
@@ -37,17 +35,6 @@ class UserTest extends AuthenticationTest
     {
         self::setToken('owner');
         parent::setUp();
-    }
-
-    private static function getEntityManager(): EntityManagerInterface
-    {
-        $registry = self::getContainer()->get('doctrine');
-
-        if ($registry instanceof Registry) {
-            return $registry->getManager();
-        }
-
-        self::fail('Doctrine registry not loaded');
     }
 
     public function testGet(): void

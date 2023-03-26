@@ -12,10 +12,25 @@
 
 namespace App\Tests\Api\Anonymous;
 
+use App\Entity\User;
 use App\Tests\Api\MyApiTest;
 
 class UserTest extends MyApiTest
 {
+    private static int $userId;
+
+    public static function setUpBeforeClass(): void
+    {
+        parent::setUpBeforeClass();
+
+        $user = self::getEntityManager()->getRepository(User::class)->findOneByPseudonym('DefaultUser');
+        if (null === $user) {
+            self::fail('The Owner user not found. Did you load the fixtures?');
+        }
+
+        self::$userId = $user->getId() ?? 0;
+    }
+
     public function testCreateUser(): void
     {
         static::createClient()->request('POST', '/api/users', ['json' => [
@@ -29,6 +44,16 @@ class UserTest extends MyApiTest
             '@context' => '/api/contexts/ConstraintViolationList',
             '@type' => 'ConstraintViolationList',
             'hydra:title' => 'An error occurred',
+        ]);
+    }
+
+    public function testDelete(): void
+    {
+        static::createClient()->request('DELETE', '/api/users/'.self::$userId);
+        self::assertResponseStatusCodeSame(401);
+        self::assertJsonContains([
+            'code' => 401,
+            'message' => 'JWT Token not found',
         ]);
     }
 
@@ -60,5 +85,19 @@ class UserTest extends MyApiTest
         ]);
 
         self::assertHydraCollectionOnlyContainsKeysInMember(['@id', '@type', 'pseudonym', 'admin'], $response);
+    }
+
+    public function testPut(): void
+    {
+        static::createClient()->request('PUT', '/api/users/'.self::$userId, ['json' => [
+            'email' => 'foo-test@example.org',
+            'password' => 'foo-test1',
+            'pseudonym' => 'Foo Test1',
+        ]]);
+        self::assertResponseStatusCodeSame(401);
+        self::assertJsonContains([
+            'code' => 401,
+            'message' => 'JWT Token not found',
+        ]);
     }
 }

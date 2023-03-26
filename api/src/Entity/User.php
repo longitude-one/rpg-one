@@ -43,8 +43,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[Get]
 #[GetCollection]
 #[Post]
-#[Put]
-#[Patch]
+#[Put(security: 'is_granted("ROLE_ADMIN") or object == user')]
+#[Patch(security: 'is_granted("ROLE_ADMIN") or object == user')]
 #[Delete(security: 'is_granted("ROLE_ADMIN")')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface // , JwtUserInterface
 {

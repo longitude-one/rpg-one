@@ -13,6 +13,8 @@
 namespace App\Tests\Api;
 
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
+use Doctrine\Bundle\DoctrineBundle\Registry;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 
 abstract class MyApiTest extends ApiTestCase
@@ -100,5 +102,16 @@ abstract class MyApiTest extends ApiTestCase
     protected static function assertOnlyContainsKeys(array $keys, ResponseInterface $response): void
     {
         self::assertContainsKeys($keys, $response, true);
+    }
+
+    protected static function getEntityManager(): EntityManagerInterface
+    {
+        $registry = self::getContainer()->get('doctrine');
+
+        if ($registry instanceof Registry) {
+            return $registry->getManager();
+        }
+
+        self::fail('Doctrine registry not loaded');
     }
 }
