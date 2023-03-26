@@ -61,6 +61,16 @@ class UserTest extends AuthenticationTest
         ]);
 
         self::assertOnlyContainsKeys(['@context', '@id', '@type', 'email', 'pseudonym', 'admin'], $response);
+
+        $response = $this->client->request('GET', '/api/users/'.(self::$userId - 1));
+        self::assertResponseIsSuccessful();
+        self::assertJsonContains([
+            '@context' => '/api/contexts/User',
+            '@id' => '/api/users/'.(self::$userId - 1),
+            '@type' => 'https://schema.org/Person',
+        ]);
+
+        self::assertOnlyContainsKeys(['@context', '@id', '@type', 'pseudonym', 'admin'], $response);
     }
 
 //    public function testGetCollection(): void
