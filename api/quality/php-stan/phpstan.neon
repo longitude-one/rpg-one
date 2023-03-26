@@ -28,6 +28,6 @@ parameters:
 		- ../../src
 		- ../../templates
 		- ../../tests
-	scanFiles:
+	bootstrapFiles:
 	    - ../../vendor/bin/.phpunit/phpunit-9.5-0/vendor/autoload.php
 	ignoreErrors:

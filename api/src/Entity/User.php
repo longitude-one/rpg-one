@@ -69,10 +69,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface // , Jwt
 
     #[ORM\Column(length: 255, unique: true)]
     #[ApiProperty(types: ['https://schema.org/name'])]
-    #[Groups(['read', 'owner:read', 'owner:write', 'admin:read', 'admin:write'])]
+    #[Groups(['anonymous:read', 'owner:read', 'owner:write', 'admin:read', 'admin:write'])]
     #[Assert\NotBlank]
     private ?string $pseudonym = null;
 
+    /**
+     * @var string[]
+     */
     #[ORM\Column]
     #[ApiProperty(jsonSchemaContext: [
         'type' => 'array',
@@ -83,7 +86,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface // , Jwt
     /**
      * @see UserInterface
      */
-    public function eraseCredentials()
+    public function eraseCredentials(): void
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
@@ -102,7 +105,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface // , Jwt
     /**
      * @see PasswordAuthenticatedUserInterface
      */
-    public function getPassword(): string
+    public function getPassword(): ?string
     {
         return $this->password;
     }
@@ -113,6 +116,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface // , Jwt
     }
 
     /**
+     * @return string[]
+     *
      * @see UserInterface
      */
     public function getRoles(): array
@@ -132,6 +137,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface // , Jwt
     public function getUserIdentifier(): string
     {
         return (string) $this->email;
+    }
+
+    #[Groups(['anonymous:read', 'user:read'])]
+    public function isAdmin(): bool
+    {
+        return in_array('ROLE_ADMIN', $this->getRoles(), true);
     }
 
     public function setEmail(string $email): self
@@ -155,6 +166,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface // , Jwt
         return $this;
     }
 
+    /**
+     * @param string[] $roles
+     */
     public function setRoles(array $roles): self
     {
         $this->roles = $roles;
