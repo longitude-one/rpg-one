@@ -37,6 +37,12 @@ class UserTest extends AuthenticationTest
         parent::setUp();
     }
 
+    public function testDelete(): void
+    {
+        static::createClient()->request('DELETE', '/api/users/'.self::$userId);
+        self::assetJwtTokenNotFound();
+    }
+
     public function testGet(): void
     {
         $response = $this->client->request('GET', '/api/users/'.self::$userId);
@@ -60,17 +66,33 @@ class UserTest extends AuthenticationTest
         self::assertOnlyContainsKeys(['@context', '@id', '@type', 'pseudonym', 'admin'], $response);
     }
 
-//    public function testGetCollection(): void
-//    {
-//        $response = static::createClient()->request('GET', '/api/users');
-//        self::assertResponseIsSuccessful();
-//        self::assertJsonContains([
-//            '@context' => '/api/contexts/User',
-//            '@id' => '/api/users',
-//            '@type' => 'hydra:Collection',
-//            'hydra:totalItems' => 13,
-//        ]);
-//
-//        self::assertHydraCollectionOnlyContainsKeysInMember(['@id', '@type', 'pseudonym', 'admin'], $response);
-//    }
+    public function testPatch(): void
+    {
+        self::setModePatch();
+        $response = $this->client->request('PATCH', '/api/users/'.self::$userId, ['json' => [
+            'plainPassword' => 'password',
+        ]]);
+        self::assertResponseIsSuccessful();
+        self::assertJsonContains([
+            '@context' => '/api/contexts/User',
+            '@id' => '/api/users/'.self::$userId,
+            '@type' => 'https://schema.org/Person',
+        ]);
+
+        self::assertOnlyContainsKeys(['@context', '@id', '@type', 'email', 'pseudonym', 'admin'], $response);
+    }
+
+    public function testPut(): void
+    {
+        $this->client->request('PUT', '/api/users/'.self::$userId, ['json' => [
+            'plainPassword' => 'password',
+        ]]);
+        self::assertResponseIsUnprocessable();
+        self::assertJsonContains([
+            '@context' => '/api/contexts/ConstraintViolationList',
+            '@type' => 'ConstraintViolationList',
+            'hydra:title' => 'An error occurred',
+            'hydra:description' => "email: This value should not be blank.\npseudonym: This value should not be blank.",
+        ]);
+    }
 }
