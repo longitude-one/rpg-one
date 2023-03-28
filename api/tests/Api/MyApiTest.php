@@ -41,6 +41,17 @@ abstract class MyApiTest extends ApiTestCase
         }
     }
 
+    protected static function assertHydraAccessDenied(): void
+    {
+        self::assertResponseStatusCodeSame(403);
+        self::assertJsonContains([
+            '@context' => '/api/contexts/Error',
+            '@type' => 'hydra:Error',
+            'hydra:title' => 'An error occurred',
+            'hydra:description' => 'Access Denied.',
+        ]);
+    }
+
     protected static function assertHydraCollection(): void
     {
         self::assertJsonContains(['@type' => 'hydra:Collection']);
@@ -102,6 +113,15 @@ abstract class MyApiTest extends ApiTestCase
     protected static function assertOnlyContainsKeys(array $keys, ResponseInterface $response): void
     {
         self::assertContainsKeys($keys, $response, true);
+    }
+
+    protected static function assetJwtTokenNotFound(): void
+    {
+        self::assertResponseStatusCodeSame(401);
+        self::assertJsonContains([
+            'code' => 401,
+            'message' => 'JWT Token not found',
+        ]);
     }
 
     protected static function getEntityManager(): EntityManagerInterface

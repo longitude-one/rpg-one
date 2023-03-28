@@ -28,6 +28,20 @@ class UserTest extends TestCase
         self::assertNull($user->getId());
     }
 
+    // teste la méthode getPlainPassword
+    public function testPlainPassword(): void
+    {
+        $user = new User();
+        self::assertNull($user->getPlainPassword());
+
+        $actual = $expected = 'foo';
+        $user->setPlainPassword($actual);
+        self::assertSame($expected, $user->getPlainPassword());
+
+        $user->eraseCredentials();
+        self::assertNull($user->getPlainPassword());
+    }
+
     public function testUserIdentifier(): void
     {
         $user = new User();
