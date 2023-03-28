@@ -67,21 +67,28 @@ final class UserFactory extends ModelFactory
         // Default user
         $users[] = self::createOne([
             'email' => 'user@example.org',
-            'password' => 'password',
+            'plainPassword' => 'password',
             'pseudonym' => 'DefaultUser',
+        ]);
+
+        // Other user
+        $users[] = self::createOne([
+            'email' => 'other@example.org',
+            'plainPassword' => 'password',
+            'pseudonym' => 'OtherUser',
         ]);
 
         // Owner : This user is used to test the owner feature
         $users[] = self::createOne([
             'email' => 'owner@example.org',
-            'password' => 'password',
+            'plainPassword' => 'password',
             'pseudonym' => 'The Owner',
         ]);
 
         // Admin user
         $users[] = self::createOne([
             'email' => 'admin@example.org',
-            'password' => 'password',
+            'plainPassword' => 'password',
             'pseudonym' => 'DefaultAdmin',
             'roles' => ['ROLE_ADMIN'],
         ]);
@@ -116,7 +123,7 @@ final class UserFactory extends ModelFactory
             ->afterInstantiate(function (User $user): void {
                 $user->setPassword($this->passwordHasher->hashPassword(
                     $user,
-                    $user->getPassword() ?? 'password')
+                    $user->getPlainPassword() ?? 'password')
                 );
             })
         ;

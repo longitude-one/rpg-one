@@ -25,7 +25,7 @@ class UserTest extends MyApiTest
 
         $user = self::getEntityManager()->getRepository(User::class)->findOneByPseudonym('DefaultUser');
         if (null === $user) {
-            self::fail('The Owner user not found. Did you load the fixtures?');
+            self::fail('The DefaultUser user not found. Did you load the fixtures?');
         }
 
         self::$userId = $user->getId() ?? 0;
@@ -33,28 +33,24 @@ class UserTest extends MyApiTest
 
     public function testCreateUser(): void
     {
-        static::createClient()->request('POST', '/api/users', ['json' => [
-            'email' => 'foo-test-will-failed',
-            'password' => 'foo-test1',
-            'pseudonym' => 'Foo Test1',
+        $response = static::createClient()->request('POST', '/api/users', ['json' => [
+            'email' => 'foo-test-42@example.org',
+            'plainPassword' => 'foo-test42',
+            'pseudonym' => 'Foo Test42',
         ]]);
 
-        $this->assertResponseStatusCodeSame(422);
-        $this->assertJsonContains([
-            '@context' => '/api/contexts/ConstraintViolationList',
-            '@type' => 'ConstraintViolationList',
-            'hydra:title' => 'An error occurred',
+        self::assertResponseIsSuccessful();
+        self::assertJsonContains([
+            '@context' => '/api/contexts/User',
+            '@type' => 'https://schema.org/Person',
         ]);
+        self::assertOnlyContainsKeys(['@context', '@id', '@type', 'pseudonym', /* 'email', */ 'admin'], $response);
     }
 
     public function testDelete(): void
     {
         static::createClient()->request('DELETE', '/api/users/'.self::$userId);
-        self::assertResponseStatusCodeSame(401);
-        self::assertJsonContains([
-            'code' => 401,
-            'message' => 'JWT Token not found',
-        ]);
+        self::assetJwtTokenNotFound();
     }
 
     public function testGet(): void
@@ -81,10 +77,18 @@ class UserTest extends MyApiTest
             '@context' => '/api/contexts/User',
             '@id' => '/api/users',
             '@type' => 'hydra:Collection',
-            'hydra:totalItems' => 13,
         ]);
 
         self::assertHydraCollectionOnlyContainsKeysInMember(['@id', '@type', 'pseudonym', 'admin'], $response);
+    }
+
+    public function testPatch(): void
+    {
+        static::createClient()->request('PATCH', '/api/users/'.self::$userId, ['headers' => [
+            'Content-type' => 'application/merge-patch+json',
+        ]]);
+
+        self::assetJwtTokenNotFound();
     }
 
     public function testPut(): void
@@ -94,10 +98,6 @@ class UserTest extends MyApiTest
             'password' => 'foo-test1',
             'pseudonym' => 'Foo Test1',
         ]]);
-        self::assertResponseStatusCodeSame(401);
-        self::assertJsonContains([
-            'code' => 401,
-            'message' => 'JWT Token not found',
-        ]);
+        self::assetJwtTokenNotFound();
     }
 }

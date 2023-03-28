@@ -59,4 +59,26 @@ abstract class AuthenticationTest extends MyApiTest
 
         self::$token = $response->toArray()['token'];
     }
+
+    protected function setModePatch(): void
+    {
+        $this->client->setDefaultOptions([
+            'headers' => [
+                'Content-Type' => 'application/merge-patch+json',
+                'accept' => 'application/ld+json',
+                'Authorization' => 'Bearer '.self::$token,
+            ],
+        ]);
+    }
+
+    protected function unsetModePatch(): void
+    {
+        $this->client->setDefaultOptions([
+            'headers' => [
+                'Content-Type' => 'application/ld+json',
+                'accept' => 'application/ld+json',
+                'Authorization' => 'Bearer '.self::$token,
+            ],
+        ]);
+    }
 }
