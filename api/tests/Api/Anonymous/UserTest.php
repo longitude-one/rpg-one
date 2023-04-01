@@ -93,11 +93,11 @@ class UserTest extends MyApiTest
 
     public function testPut(): void
     {
-        static::createClient()->request('PUT', '/api/users/'.self::$userId, ['json' => [
+        $response = static::createClient()->request('PUT', '/api/users/'.self::$userId, ['json' => [
             'email' => 'foo-test@example.org',
             'password' => 'foo-test1',
             'pseudonym' => 'Foo Test1',
         ]]);
-        self::assetJwtTokenNotFound();
+        self::assertMethodNotAllowed();
     }
 }

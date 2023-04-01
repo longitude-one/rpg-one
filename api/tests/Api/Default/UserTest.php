@@ -108,6 +108,6 @@ class UserTest extends AuthenticationTest
             'plainPassword' => 'BAR-test1',
             'pseudonym' => 'BAR Test1',
         ]]);
-        self::assertHydraAccessDenied();
+        self::assertMethodNotAllowed();
     }
 }

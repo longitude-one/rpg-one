@@ -19,7 +19,6 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
-use ApiPlatform\Metadata\Put;
 use App\Repository\UserRepository;
 use App\State\UserPasswordHasher;
 use Doctrine\ORM\Mapping as ORM;
@@ -45,7 +44,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[Get]
 #[GetCollection]
 #[Post(security: 'is_granted("ROLE_ADMIN") or !is_granted("ROLE_USER")', processor: UserPasswordHasher::class)]
-#[Put(security: 'is_granted("ROLE_ADMIN") or object == user', processor: UserPasswordHasher::class)]
 #[Patch(security: 'is_granted("ROLE_ADMIN") or object == user', processor: UserPasswordHasher::class)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface // , JwtUserInterface
 {

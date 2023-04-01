@@ -107,6 +107,11 @@ abstract class MyApiTest extends ApiTestCase
         self::assertHydraCollectionContainsKeysInMember($keys, $response, true);
     }
 
+    protected static function assertMethodNotAllowed(): void
+    {
+        self::assertResponseStatusCodeSame(405);
+    }
+
     /**
      * @param string[] $keys
      */

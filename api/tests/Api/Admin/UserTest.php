@@ -84,12 +84,7 @@ class UserTest extends AuthenticationTest
             'plainPassword' => 'BAR-test1',
             'pseudonym' => 'BAR Test1',
         ]]);
-        self::assertResponseIsSuccessful();
-        self::assertJsonContains([
-            '@context' => '/api/contexts/User',
-            '@type' => 'https://schema.org/Person',
-        ]);
-        self::assertOnlyContainsKeys(['@context', '@id', '@type', 'pseudonym', 'email', 'admin'], $response);
+        self::assertMethodNotAllowed();
 
         self::setModePatch();
         $this->client->request('PATCH', $userToManipulate, ['json' => [

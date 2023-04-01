@@ -87,12 +87,6 @@ class UserTest extends AuthenticationTest
         $this->client->request('PUT', '/api/users/'.self::$userId, ['json' => [
             'plainPassword' => 'password',
         ]]);
-        self::assertResponseIsUnprocessable();
-        self::assertJsonContains([
-            '@context' => '/api/contexts/ConstraintViolationList',
-            '@type' => 'ConstraintViolationList',
-            'hydra:title' => 'An error occurred',
-            'hydra:description' => "email: This value should not be blank.\npseudonym: This value should not be blank.",
-        ]);
+        self::assertMethodNotAllowed();
     }
 }

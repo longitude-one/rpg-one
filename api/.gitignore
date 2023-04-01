@@ -1,4 +1,4 @@
-/api/.coverage
+/.coverage
 /docker/db/data
 /quality/**/composer.lock
 /quality/**/vendor/*
