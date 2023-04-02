@@ -40,7 +40,7 @@ class UserTest extends AuthenticationTest
     public function testDelete(): void
     {
         static::createClient()->request('DELETE', '/api/users/'.self::$userId);
-        self::assetJwtTokenNotFound();
+        self::assertJwtTokenNotFound();
     }
 
     public function testGet(): void

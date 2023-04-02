@@ -50,7 +50,7 @@ class UserTest extends MyApiTest
     public function testDelete(): void
     {
         static::createClient()->request('DELETE', '/api/users/'.self::$userId);
-        self::assetJwtTokenNotFound();
+        self::assertJwtTokenNotFound();
     }
 
     public function testGet(): void
@@ -88,7 +88,7 @@ class UserTest extends MyApiTest
             'Content-type' => 'application/merge-patch+json',
         ]]);
 
-        self::assetJwtTokenNotFound();
+        self::assertJwtTokenNotFound();
     }
 
     public function testPut(): void

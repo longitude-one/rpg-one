@@ -107,6 +107,15 @@ abstract class MyApiTest extends ApiTestCase
         self::assertHydraCollectionContainsKeysInMember($keys, $response, true);
     }
 
+    protected static function assertJwtTokenNotFound(): void
+    {
+        self::assertResponseStatusCodeSame(401);
+        self::assertJsonContains([
+            'code' => 401,
+            'message' => 'JWT Token not found',
+        ]);
+    }
+
     protected static function assertMethodNotAllowed(): void
     {
         self::assertResponseStatusCodeSame(405);
@@ -118,15 +127,6 @@ abstract class MyApiTest extends ApiTestCase
     protected static function assertOnlyContainsKeys(array $keys, ResponseInterface $response): void
     {
         self::assertContainsKeys($keys, $response, true);
-    }
-
-    protected static function assetJwtTokenNotFound(): void
-    {
-        self::assertResponseStatusCodeSame(401);
-        self::assertJsonContains([
-            'code' => 401,
-            'message' => 'JWT Token not found',
-        ]);
     }
 
     protected static function getEntityManager(): EntityManagerInterface

@@ -12,6 +12,7 @@
 
 namespace App\DataFixtures;
 
+use App\DataFixtures\Factory\ConversationFactory;
 use App\DataFixtures\Factory\UserFactory;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
@@ -20,8 +21,10 @@ class AppFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-        // TODO Load only on dev environment
+        // TODO Load only on dev and test environment
         UserFactory::createMany(10);
         UserFactory::createTestUsers();
+        ConversationFactory::createMany(20);
+        ConversationFactory::createTestConversations();
     }
 }
